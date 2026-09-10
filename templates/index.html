@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediAssist — AI Health Companion</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='img.png') }}" alt="logo" class="brand-logo">
+      <span>MediAssist</span>
+    </div>
+    <span class="tag">AI-assisted symptom checker · not a medical diagnosis</span>
+  </header>
+
+  <main class="layout">
+    <section class="panel checker">
+      <h1>What are you feeling today?</h1>
+      <p class="sub">Pick your symptoms below. The model will suggest a likely condition and MediBot will explain it in plain language, grounded in this app's own reference data.</p>
+
+      <input id="symptomSearch" type="text" placeholder="Search symptoms (e.g. cough, fatigue)…" autocomplete="off">
+
+      <div id="symptomList" class="symptom-grid">
+        {% for s in all_symptoms %}
+        <label class="chip">
+          <input type="checkbox" value="{{ s }}" class="symptom-checkbox">
+          <span>{{ s.replace('_', ' ') }}</span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <div class="selected-row">
+        <strong>Selected:</strong> <span id="selectedList">none yet</span>
+      </div>
+
+      <button id="checkBtn" class="btn-primary">Check my symptoms</button>
+      <p id="checkError" class="error"></p>
+
+      <div id="resultCard" class="result-card hidden">
+        <h2 id="resultDisease"></h2>
+        <p id="resultDesc"></p>
+
+        <div id="aiSummaryBox" class="ai-summary hidden">
+          <div class="ai-summary-label">MediBot's plain-language summary</div>
+          <p id="aiSummaryText"></p>
+        </div>
+
+        <div id="candidatesBox" class="candidates hidden">
+          <div class="ai-summary-label">Other possible matches</div>
+          <ul id="candidatesList"></ul>
+        </div>
+
+        <div class="result-grid">
+          <div>
+            <h3>Precautions</h3>
+            <ul id="resultPrecautions"></ul>
+          </div>
+          <div>
+            <h3>Commonly referenced medications</h3>
+            <ul id="resultMedications"></ul>
+          </div>
+          <div>
+            <h3>Diet suggestions</h3>
+            <ul id="resultDiet"></ul>
+          </div>
+          <div>
+            <h3>Lifestyle / workout</h3>
+            <ul id="resultWorkout"></ul>
+          </div>
+        </div>
+        <p class="disclaimer">This is not a diagnosis. Please confirm with a doctor or pharmacist, especially before starting any medication.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating AI chat popup -->
+  <button id="chatToggle" class="chat-toggle">💬 Ask MediBot</button>
+
+  <div id="chatPanel" class="chat-panel hidden">
+    <div class="chat-header">
+      <span>MediBot</span>
+      <button id="chatClose" class="chat-close">✕</button>
+    </div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="msg bot">Hi, I'm MediBot. Ask me about symptoms, or anything from your check above. I'm informational only — not a substitute for a doctor.</div>
+    </div>
+    <div id="chatSources" class="chat-sources"></div>
+    <form id="chatForm" class="chat-input-row">
+      <input id="chatInput" type="text" placeholder="Type a message…" autocomplete="off">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
